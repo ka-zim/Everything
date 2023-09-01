@@ -1,2 +1,2 @@
 # Everything
-Contains all my posts
+Contains all of my posts
