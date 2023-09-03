@@ -35,6 +35,25 @@ def refresh_b():
 x = y = 5
 paddle_speed = 7
 
+def one_player(condition):
+    global x, y, a, b
+
+    if condition:
+        # automate player b
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and player_a_rect.top >= 0: player_a_rect.y -= paddle_speed
+        elif keys[pygame.K_s] and player_a_rect.bottom <= Y: player_a_rect.y += paddle_speed
+        if ball_rect.y < player_b_rect.top and player_b_rect.top >= 0: player_b_rect.y -= 4
+        if ball_rect.bottom > player_b_rect.bottom and player_b_rect.bottom <= Y: player_b_rect.y += 4
+    
+    else:
+        # no automation
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and player_a_rect.top >= 0: player_a_rect.y -= paddle_speed
+        elif keys[pygame.K_s] and player_a_rect.bottom <= Y: player_a_rect.y += paddle_speed
+        if keys[pygame.K_UP] and player_b_rect.top >= 0: player_b_rect.y -= paddle_speed
+        elif keys[pygame.K_DOWN] and player_b_rect.bottom <= Y: player_b_rect.y += paddle_speed
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -49,7 +68,7 @@ while True:
     if a == b or a > b or b > a:
         refresh_a()
         refresh_b()
-
+    
     ball_rect.x += x
     ball_rect.y += y
     if ball_rect.y <= 0 or ball_rect.midbottom[1] >= Y: y *= -1
@@ -63,12 +82,10 @@ while True:
         b += 1
     screen.blit(ball_surf, ball_rect)
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w] and player_a_rect.top >= 0: player_a_rect.y -= paddle_speed
-    elif keys[pygame.K_s] and player_a_rect.bottom <= Y: player_a_rect.y += paddle_speed
-    if keys[pygame.K_UP] and player_b_rect.top >= 0: player_b_rect.y -= paddle_speed
-    elif keys[pygame.K_DOWN] and player_b_rect.bottom <= Y: player_b_rect.y += paddle_speed
-    
+
+    one_player(True) # Change to False for 2 player
+
+
     if ball_rect.left == player_a_rect.right and ball_rect.top <= player_a_rect.bottom and ball_rect.bottom >= player_a_rect.top: x *= -1
     elif player_a_rect.colliderect(ball_rect) and ball_rect.left < player_a_rect.right: y *= -1
     if ball_rect.right == player_b_rect.left and ball_rect.top <= player_b_rect.bottom and ball_rect.bottom >= player_b_rect.top: x *= -1
@@ -85,6 +102,6 @@ while True:
         exit('player B wins')
     
     pygame.display.update()
-    clock.tick(144) # 144 or 120 are optimal speeds
+    clock.tick(120) # 144 or 120 are optimal speeds
 
     # Finished
